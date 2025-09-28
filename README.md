@@ -109,3 +109,36 @@ On mount the provider calls `reconnectSession()` and re-attaches the disconnect 
 The navbar button is a white pill (`WalletButton`) and reuses Tailwind utilities. Modify its look in `WalletButton.tsx`.
 
 ---
+
+
+## Dashboard Structure (Separated by Role)
+
+The previous experimental unified `/dashboard` with cookie-based role switching has been removed.
+
+Current top-level route groups:
+
+- `/organization-dashboard` – overview KPIs + sites list & site detail.
+- `/field-dashboard` – simplified field data entry form (placeholder for future offline/queue features).
+- `/verifier-dashboard` – verification activity list.
+
+Why: this mirrors real-world separation of concerns and avoids leaking navigation items across roles. Proper auth + RLS enforcement will replace this static split later.
+
+Removed prototype artifacts:
+
+- `src/app/dashboard/*`
+- `src/components/ClientSidebarNav.tsx`
+- `src/components/RoleSwitcher.tsx`
+- `src/app/api/set-role/route.ts`
+- `src/middleware.ts`
+
+Next improvements (future):
+
+1. Introduce Supabase Auth & derive organization membership.
+2. Add RLS policies (templates already started) for row-level scoping.
+3. Add pagination + filtering to sites & verifications.
+4. Field dashboard: site picker & offline capture queue.
+5. Organization: recent measurements widget & simple project view (optional later).
+
+
+
+
