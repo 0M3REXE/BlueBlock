@@ -34,3 +34,78 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+---
+
+## Pera Wallet Integration
+
+This project integrates [Pera Wallet](https://perawallet.app/) using `@perawallet/connect` to enable Algorand account connections.
+
+### Files Added
+
+- `src/lib/wallet/PeraWalletProvider.tsx` – React context handling connect / reconnect / disconnect.
+- `src/components/WalletButton.tsx` – UI button that shows `Connect Wallet`, loading state, or truncated address and allows disconnect.
+- Modified `src/app/layout.tsx` – Wraps the app with `PeraWalletProvider`.
+- Modified `src/components/Navbar.tsx` – Replaced static link with dynamic `WalletButton`.
+
+### Usage
+
+`WalletButton` is already placed in the navbar. To use wallet state in a component:
+
+```tsx
+"use client";
+import { useWallet } from "../lib/wallet/PeraWalletProvider";
+
+export function Example() {
+	const { address, connect, disconnect, isConnected } = useWallet();
+	return (
+		<div>
+			{isConnected ? (
+				<button onClick={disconnect}>Disconnect {address?.slice(0,6)}…</button>
+			) : (
+				<button onClick={connect}>Connect Wallet</button>
+			)}
+		</div>
+	);
+}
+```
+
+### Chain Selection
+
+By default the SDK uses chain id `4160` (All). To pin to TestNet or MainNet adjust the constructor in `PeraWalletProvider`:
+
+```ts
+new PeraWalletConnect({ chainId: "416002" }); // TestNet
+```
+
+### Future: Signing Transactions
+
+`algosdk` is installed. Example skeleton:
+
+```ts
+import algosdk from "algosdk";
+import { useWallet } from "../lib/wallet/PeraWalletProvider";
+
+async function signPayment(pera: any, from: string, to: string) {
+	const algod = new algosdk.Algodv2("", "https://testnet-api.algonode.cloud", "");
+	const params = await algod.getTransactionParams().do();
+	const txn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+		from,
+		to,
+		amount: 1, // microAlgos
+		suggestedParams: params,
+	});
+	const signed = await pera.signTransaction([[{ txn }]]);
+	await algod.sendRawTransaction(signed[0]).do();
+}
+```
+
+### Reconnect Logic
+
+On mount the provider calls `reconnectSession()` and re-attaches the disconnect listener.
+
+### Styling
+
+The navbar button is a white pill (`WalletButton`) and reuses Tailwind utilities. Modify its look in `WalletButton.tsx`.
+
+---

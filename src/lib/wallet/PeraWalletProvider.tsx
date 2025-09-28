@@ -10,15 +10,21 @@ interface WalletContextValue {
   disconnect: () => Promise<void>;
   isConnected: boolean;
   pera: PeraWalletConnect | null;
+  chainId: number;
+  networkName: string;
+  isTestnet: boolean;
+  setChainId: (id: AlgorandChainIDs) => void; // Future network switching
 }
 
 const WalletContext = createContext<WalletContextValue | undefined>(undefined);
 
 let peraInstance: PeraWalletConnect | null = null;
+type AlgorandChainIDs = 416001 | 416002 | 416003 | 4160;
+let currentChainId: AlgorandChainIDs = 4160; // default (All networks)
 
 function getPera() {
   if (!peraInstance) {
-    peraInstance = new PeraWalletConnect({ shouldShowSignTxnToast: false });
+  peraInstance = new PeraWalletConnect({ shouldShowSignTxnToast: false, chainId: currentChainId });
   }
   return peraInstance;
 }
@@ -26,6 +32,7 @@ function getPera() {
 export function PeraWalletProvider({ children }: { children: React.ReactNode }) {
   const [address, setAddress] = useState<string | null>(null);
   const [connecting, setConnecting] = useState(false);
+  const [chainId, setChainId] = useState<number>(currentChainId);
   const pera = getPera();
 
   const disconnect = useCallback(async () => {
@@ -65,9 +72,32 @@ export function PeraWalletProvider({ children }: { children: React.ReactNode }) 
       .catch((e) => console.warn("Reconnect failed", e));
   }, [pera, disconnect]);
 
+  const networkName = useMemo(() => {
+    switch (chainId) {
+      case 416001: return "MainNet";
+      case 416002: return "TestNet";
+      case 416003: return "BetaNet";
+      default: return "All";
+    }
+  }, [chainId]);
+
   const value = useMemo<WalletContextValue>(
-    () => ({ address, connecting, connect, disconnect, isConnected: !!address, pera }),
-    [address, connecting, connect, disconnect, pera]
+    () => ({
+      address,
+      connecting,
+      connect,
+      disconnect,
+      isConnected: !!address,
+      pera,
+      chainId,
+      networkName,
+      isTestnet: chainId === 416002,
+      setChainId: (id: AlgorandChainIDs) => {
+        currentChainId = id;
+        setChainId(id);
+      },
+    }),
+    [address, connecting, connect, disconnect, pera, chainId, networkName]
   );
 
   return <WalletContext.Provider value={value}>{children}</WalletContext.Provider>;
