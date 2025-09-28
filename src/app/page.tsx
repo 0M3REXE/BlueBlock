@@ -1,12 +1,13 @@
 import Hero from "../components/Hero";
 import FeaturesSection from "../components/FeaturesSection";
 import WorkflowSection from "../components/WorkflowSection";
+import AlgorandBenefitsSection from "../components/AlgorandBenefitsSection";
 import CTASection from "../components/CTASection";
 import Navbar, { NavLink } from "../components/Navbar";
 
 const NAV_LINKS: NavLink[] = [
-  { label: "Organisation Dashboard", href: "#org" },
-  { label: "Field Dashboard", href: "#field" },
+  { label: "Organisation Dashboard", href: "#organisation-dashboard" },
+  { label: "Field Dashboard", href: "#field-dashboard" },
   { label: "Verifier", href: "#verifier" },
   { label: "Connect Wallet", href: "#wallet" },
 ];
@@ -25,7 +26,8 @@ export default function Home() {
           <Hero className="" />
         </div>
         <FeaturesSection />
-        <WorkflowSection />
+  <WorkflowSection />
+  <AlgorandBenefitsSection />
         <CTASection />
         <div className="pb-24" />
       </section>

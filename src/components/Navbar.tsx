@@ -1,6 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { Poppins } from "next/font/google";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-poppins-navbar",
+});
 
 export type NavLink = {
   label: string;
@@ -16,8 +23,8 @@ export default function Navbar({ links, className = "" }: NavbarProps) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className={`sticky top-4 z-40 mx-auto w-full max-w-5xl px-3 ${className}`}>
-      <header className="relative flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-[#032229]/85 px-4 py-3 text-sm text-white/75 shadow-sm backdrop-blur-sm sm:px-6">
+    <div className={`sticky top-4 z-40 mx-auto w-full max-w-5xl px-3 ${className} ${poppins.variable}`}>
+  <header className="relative flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-[#032229]/85 px-4 py-3 text-sm text-white/75 shadow-sm backdrop-blur-sm sm:px-6">
         <a href="#top" className="group flex items-center gap-2">
           <span className="font-heading text-lg font-semibold uppercase tracking-[0.32em] text-white/85 transition-colors group-hover:text-white">BlueBlock</span>
         </a>
@@ -47,7 +54,7 @@ export default function Navbar({ links, className = "" }: NavbarProps) {
         </button>
 
         <nav aria-label="Primary" className="hidden lg:block">
-          <ul className="flex items-center gap-6 text-[0.7rem] font-medium tracking-[0.22em] text-white/65">
+          <ul className="flex items-center gap-6 text-[0.7rem] font-medium tracking-[0.20em] text-white/85" style={{ fontFamily: 'var(--font-poppins-navbar)' }}>
             {links.map(({ label, href }, idx) => {
               const isWallet = /wallet/i.test(label) || idx === links.length - 1;
               return (
@@ -55,7 +62,7 @@ export default function Navbar({ links, className = "" }: NavbarProps) {
                   <a
                     className={`cursor-pointer select-none ${
                       isWallet
-                        ? 'rounded-full bg-cyan-400/90 px-4 py-2 font-semibold tracking-wide text-[#021a22] shadow hover:bg-cyan-300'
+                        ? 'rounded-full bg-white px-5 py-2 font-semibold tracking-wide text-[#062024] shadow-sm ring-1 ring-white/60 hover:bg-white/90 hover:ring-white'
                         : ''
                     }`}
                     href={href}
@@ -69,8 +76,8 @@ export default function Navbar({ links, className = "" }: NavbarProps) {
         </nav>
 
         {open && (
-          <div className="absolute left-0 top-full mt-2 w-full overflow-hidden rounded-xl border border-white/10 bg-[#032229]/95 p-4 shadow-lg lg:hidden">
-            <ul className="flex flex-col gap-2.5 text-[0.75rem] font-medium tracking-[0.25em] text-white/70">
+          <div className="absolute left-0 top-full mt-2 w-full overflow-hidden rounded-xl border border-white/10 bg-[#032229]/95 p-4 shadow-lg backdrop-blur-sm lg:hidden">
+            <ul className="flex flex-col gap-2.5 text-[0.75rem] font-medium tracking-[0.22em] text-white/80" style={{ fontFamily: 'var(--font-poppins-navbar)' }}>
               {links.map(({ label, href }, idx) => {
                 const isWallet = /wallet/i.test(label) || idx === links.length - 1;
                 return (
@@ -80,7 +87,7 @@ export default function Navbar({ links, className = "" }: NavbarProps) {
                       href={href}
                       className={`block rounded-xl px-4 py-3 transition-colors hover:bg-white/10 hover:text-white ${
                         isWallet
-                          ? 'bg-cyan-400/90 text-[#021a22] font-semibold tracking-wide hover:bg-cyan-300'
+                          ? 'bg-white text-[#062024] font-semibold tracking-wide shadow-sm ring-1 ring-white/60 hover:bg-white/90'
                           : ''
                       }`}
                     >
