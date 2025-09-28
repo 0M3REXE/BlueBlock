@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import WalletButton from "./WalletButton";
 import { Poppins } from "next/font/google";
 
 const poppins = Poppins({
@@ -53,49 +54,32 @@ export default function Navbar({ links, className = "" }: NavbarProps) {
           </div>
         </button>
 
-        <nav aria-label="Primary" className="hidden lg:block">
+        <nav aria-label="Primary" className="hidden items-center gap-5 lg:flex">
           <ul className="flex items-center gap-6 text-[0.7rem] font-medium tracking-[0.20em] text-white/85" style={{ fontFamily: 'var(--font-poppins-navbar)' }}>
-            {links.map(({ label, href }, idx) => {
-              const isWallet = /wallet/i.test(label) || idx === links.length - 1;
-              return (
-                <li key={label} className="transition-colors duration-150 hover:text-white">
-                  <a
-                    className={`cursor-pointer select-none ${
-                      isWallet
-                        ? 'rounded-full bg-white px-5 py-2 font-semibold tracking-wide text-[#062024] shadow-sm ring-1 ring-white/60 hover:bg-white/90 hover:ring-white'
-                        : ''
-                    }`}
-                    href={href}
-                  >
-                    {label}
-                  </a>
-                </li>
-              );
-            })}
+            {links.filter(l => !/wallet/i.test(l.label)).map(({ label, href }) => (
+              <li key={label} className="transition-colors duration-150 hover:text-white">
+                <a className="cursor-pointer select-none" href={href}>{label}</a>
+              </li>
+            ))}
           </ul>
+          <WalletButton className="ml-2" />
         </nav>
 
         {open && (
           <div className="absolute left-0 top-full mt-2 w-full overflow-hidden rounded-xl border border-white/10 bg-[#032229]/95 p-4 shadow-lg backdrop-blur-sm lg:hidden">
             <ul className="flex flex-col gap-2.5 text-[0.75rem] font-medium tracking-[0.22em] text-white/80" style={{ fontFamily: 'var(--font-poppins-navbar)' }}>
-              {links.map(({ label, href }, idx) => {
-                const isWallet = /wallet/i.test(label) || idx === links.length - 1;
-                return (
-                  <li key={label}>
-                    <a
-                      onClick={() => setOpen(false)}
-                      href={href}
-                      className={`block rounded-xl px-4 py-3 transition-colors hover:bg-white/10 hover:text-white ${
-                        isWallet
-                          ? 'bg-white text-[#062024] font-semibold tracking-wide shadow-sm ring-1 ring-white/60 hover:bg-white/90'
-                          : ''
-                      }`}
-                    >
-                      {label}
-                    </a>
-                  </li>
-                );
-              })}
+              {links.filter(l => !/wallet/i.test(l.label)).map(({ label, href }) => (
+                <li key={label}>
+                  <a
+                    onClick={() => setOpen(false)}
+                    href={href}
+                    className="block rounded-xl px-4 py-3 transition-colors hover:bg-white/10 hover:text-white"
+                  >
+                    {label}
+                  </a>
+                </li>
+              ))}
+              <li className="pt-2"><WalletButton className="w-full justify-center rounded-xl px-4 py-3 text-[0.75rem]" /></li>
             </ul>
           </div>
         )}

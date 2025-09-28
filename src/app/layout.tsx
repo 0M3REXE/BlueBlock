@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Jost, K2D } from "next/font/google";
+import { PeraWalletProvider } from "../lib/wallet/PeraWalletProvider";
 import "./globals.css";
 
 const jost = Jost({
@@ -30,9 +31,11 @@ export default function RootLayout({
       <body
         className={`${jost.variable} ${k2d.variable} antialiased scroll-smooth selection:bg-cyan-300/30 selection:text-white`}
       >
-        <div className="relative flex min-h-dvh flex-col overflow-x-hidden">
-          {children}
-        </div>
+        <PeraWalletProvider>
+          <div className="relative flex min-h-dvh flex-col overflow-x-hidden">
+            {children}
+          </div>
+        </PeraWalletProvider>
       </body>
     </html>
   );

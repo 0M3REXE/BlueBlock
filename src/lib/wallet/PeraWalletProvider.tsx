@@ -31,7 +31,7 @@ export function PeraWalletProvider({ children }: { children: React.ReactNode }) 
   const disconnect = useCallback(async () => {
     try {
       await pera.disconnect();
-    } catch (e) {
+    } catch {
       // ignore
     } finally {
       setAddress(null);
@@ -44,10 +44,10 @@ export function PeraWalletProvider({ children }: { children: React.ReactNode }) 
       const accounts = await pera.connect();
       pera.connector?.on("disconnect", disconnect);
       if (accounts.length) setAddress(accounts[0]);
-    } catch (e: any) {
-      if (e?.data?.type !== "CONNECT_MODAL_CLOSED") {
-        console.error("Pera connect error", e);
-      }
+    } catch (e: unknown) {
+      interface ErrWithData { data?: { type?: string } }
+      const dataType = (e as ErrWithData)?.data?.type;
+      if (dataType !== "CONNECT_MODAL_CLOSED") console.error("Pera connect error", e);
     } finally {
       setConnecting(false);
     }
