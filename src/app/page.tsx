@@ -3,14 +3,8 @@ import FeaturesSection from "../components/FeaturesSection";
 import WorkflowSection from "../components/WorkflowSection";
 import AlgorandBenefitsSection from "../components/AlgorandBenefitsSection";
 import CTASection from "../components/CTASection";
-import Navbar, { NavLink } from "../components/Navbar";
-
-const NAV_LINKS: NavLink[] = [
-  { label: "Organisation Dashboard", href: "/organization-dashboard" },
-  { label: "Field Dashboard", href: "/field-dashboard" },
-  { label: "Verifier", href: "/verifier-dashboard" },
-  { label: "Connect Wallet", href: "#wallet" }, // keeps wallet anchor behavior if used
-];
+import Navbar from "../components/Navbar";
+import { NAV_LINKS } from "../components/navLinks";
 
 export default function Home() {
   return (
