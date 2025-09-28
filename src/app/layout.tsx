@@ -15,9 +15,9 @@ const k2d = K2D({
 });
 
 export const metadata: Metadata = {
-  title: "Oceans English",
+  title: "BlueBlock",
   description:
-    "An immersive ocean-themed English learning experience for young people.",
+    "BlueBlock enables decentralized, verifiable MRV for blue carbon ecosystem restoration in India—transparent data, credible credits, real climate impact.",
 };
 
 export default function RootLayout({
@@ -27,8 +27,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${jost.variable} ${k2d.variable} antialiased`}>
-        {children}
+      <body
+        className={`${jost.variable} ${k2d.variable} antialiased scroll-smooth selection:bg-cyan-300/30 selection:text-white`}
+      >
+        <div className="relative flex min-h-dvh flex-col overflow-x-hidden">
+          {children}
+        </div>
       </body>
     </html>
   );

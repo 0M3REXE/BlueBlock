@@ -1,43 +1,44 @@
-import Image from "next/image";
-
 interface HeroProps {
   className?: string;
 }
 
 export default function Hero({ className = "" }: HeroProps) {
   return (
-    <section
-      id="learn-more"
-      className={`grid gap-12 lg:grid-cols-[minmax(0,520px)_minmax(280px,1fr)] lg:items-center ${className}`}
-    >
-      <div className="space-y-8">
-        <h1 className="font-heading text-[2.8rem] uppercase leading-[1.1] drop-shadow-[0_8px_24px_rgba(0,0,0,0.35)] sm:text-5xl md:text-[3.5rem]">
-          An English nursery for young people
+    <section id="learn-more" className={`relative max-w-3xl pt-2 ${className}`}>
+      <div className="space-y-7">
+        <h1 className="font-heading text-[2.35rem] font-semibold leading-tight tracking-tight text-white sm:text-5xl md:text-[3.05rem]">
+          Decentralized MRV for
+          <span className="block text-cyan-300">Blue Carbon</span>
         </h1>
-        <p className="text-base font-medium leading-relaxed tracking-[0.09em] text-white/85 sm:text-lg">
-          Create a useful educational playground to help children learn English well. In addition, there are creative games to help improve the thinking skills of young children.
+        <p className="max-w-[600px] text-base leading-relaxed text-white/70 sm:text-lg">
+          BlueBlock provides transparent, cryptographically verifiable Monitoring, Reporting & Verification for coastal ecosystem restoration. Generate trustworthy carbon data, unlock credit issuance, and accelerate nature-based climate action across India.
         </p>
-        <div>
+        <div className="flex flex-wrap gap-3 pt-1">
           <a
-            className="inline-flex items-center justify-center rounded-full bg-white px-8 py-3 text-lg font-semibold tracking-[0.1em] text-[#021a22] shadow-[0_12px_25px_rgba(0,0,0,0.25)] transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-[0_18px_30px_rgba(0,0,0,0.28)]"
-            href="#learn-more"
+            className="inline-flex items-center justify-center rounded-md bg-cyan-400/90 px-7 py-3 text-sm font-semibold tracking-wide text-[#062024] shadow hover:bg-cyan-300"
+            href="#wallet"
           >
-            Learn now
+            Launch App
+          </a>
+          <a
+            className="inline-flex items-center justify-center rounded-md border border-white/20 px-7 py-3 text-sm font-medium text-white/75 transition hover:border-white/40 hover:text-white"
+            href="#verifier"
+          >
+            Become a Verifier
           </a>
         </div>
-      </div>
-      <div className="relative mx-auto flex h-[260px] w-[90%] max-w-[420px] items-end lg:h-[340px] lg:w-full">
-        <div className="absolute -left-10 -top-6 h-16 w-16 rounded-full border border-white/40 bg-white/20" />
-        <div className="absolute left-16 top-6 h-10 w-10 rounded-full border border-white/35" />
-        <div className="absolute left-28 top-14 h-6 w-6 rounded-full border border-white/30" />
-        <Image
-          src="/whale.svg"
-          alt="Smiling whale floating with bubbles"
-          fill
-          sizes="(max-width: 1024px) 70vw, 420px"
-          className="object-contain"
-          priority
-        />
+        <div className="mt-8 flex flex-wrap gap-4">
+          {[
+            { k: 'Projects', v: '24+' },
+            { k: 'Hectares Tracked', v: '3,800+' },
+            { k: 'tCO₂ Potential', v: '1.2M+' },
+          ].map(b => (
+            <div key={b.k} className="flex min-w-[150px] flex-col gap-1 rounded-lg border border-white/10 bg-white/[0.04] px-4 py-3 text-xs">
+              <span className="text-lg font-semibold text-white">{b.v}</span>
+              <span className="text-[0.55rem] uppercase tracking-[0.35em] text-white/55">{b.k}</span>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );
