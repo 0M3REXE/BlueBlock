@@ -1,114 +1,151 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
 
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+<div align="center">
+  <h1>BlueBlock</h1>
+  <p><strong>Transparent reforestation + ecological restoration data anchored to the Algorand blockchain.</strong></p>
+</div>
 
 ---
 
-## Pera Wallet Integration
+## 1. What Is This Project?
 
-This project integrates [Pera Wallet](https://perawallet.app/) using `@perawallet/connect` to enable Algorand account connections.
+BlueBlock is a Next.js + Supabase application for managing reforestation / restoration project data:
 
-### Files Added
+- Track sites, planting batches, measurements, photos and verification events.
+- Provide separate focused dashboards for Organization staff, Field operators, and external Verifiers.
+- (Planned) Periodically aggregate critical data into Merkle roots and anchor them on Algorand for tamper‑evident auditability.
 
-- `src/lib/wallet/PeraWalletProvider.tsx` – React context handling connect / reconnect / disconnect.
-- `src/components/WalletButton.tsx` – UI button that shows `Connect Wallet`, loading state, or truncated address and allows disconnect.
-- Modified `src/app/layout.tsx` – Wraps the app with `PeraWalletProvider`.
-- Modified `src/components/Navbar.tsx` – Replaced static link with dynamic `WalletButton`.
+## 2. Why Algorand?
 
-### Usage
+Algorand offers low latency finality, low fees, and energy efficient consensus—ideal for frequent lightweight data anchoring. Instead of pushing every measurement on‑chain (expensive & noisy), BlueBlock will:
 
-`WalletButton` is already placed in the navbar. To use wallet state in a component:
+1. Build a canonical, ordered dataset in Postgres (Supabase).
+2. Hash relevant rows (e.g. latest measurements, verification outcomes) into a Merkle tree.
+3. Commit the Merkle root to Algorand (onchain_anchors table already scaffolded).
+4. Allow any third party to re-compute and verify inclusion proofs against the anchored root.
 
+Benefits:
+- Immutable timestamp + ordering guarantee.
+- Verifiable history without exposing sensitive raw data publicly.
+- Cheap to scale (root commits vs. per-record writes).
+
+## 3. Pera Wallet Integration
+
+The app integrates [Pera Wallet](https://perawallet.app/) via `@perawallet/connect` so users (or later automated org keys) can connect an Algorand address, sign anchor transactions, and in future verify proofs.
+
+Key integration pieces:
+- `src/lib/wallet/PeraWalletProvider.tsx` – connection lifecycle + reconnect.
+- `src/components/WalletButton.tsx` – adaptive connect / address / disconnect UI.
+- Global provider wrapped in `app/layout.tsx`.
+
+Future additions:
+- Signing anchor transactions automatically when a new root is ready.
+- Viewing recent on-chain anchor transactions with deep links to explorers.
+
+## 4. Current Architecture (MVP State)
+
+| Layer | Technology | Purpose |
+|-------|------------|---------|
+| Web UI | Next.js (App Router), React, TypeScript | Dashboards + landing site |
+| Styling | Tailwind CSS | Rapid, utility-first styling |
+| Data | Supabase Postgres | Authoritative project, site & measurement data |
+| On-Chain | Algorand (planned) | Anchor Merkle roots of critical data |
+| Wallet | Pera Wallet | User key management & transaction signing |
+
+Logical flow:
+1. Field users submit measurements via Field dashboard (placeholder form now).
+2. Organization users view KPIs, site detail, manage field member associations.
+3. Verifiers review verification records (table present; logic to expand).
+4. A background (future) job computes Merkle root -> signed & sent to Algorand.
+5. Anchor tx hash stored in `onchain_anchors` for audit UI.
+
+## 5. Dashboards Overview
+
+| Path | Audience | Status |
+|------|----------|--------|
+| `/organization-dashboard` | Internal org staff | KPIs, Sites list, Site detail (members, batches, measurements, photos) |
+| `/field-dashboard` | Field teams | Measurement submission (expanding soon) |
+| `/verifier-dashboard` | External verifiers | Verification records table |
+
+Sidebars + top unified navbar keep navigation consistent while keeping role scoping conceptual (auth/RLS to follow).
+
+## 6. Feature Highlights (Implemented)
+- Wallet connect / disconnect with Pera Wallet (session reconnect).
+- Structured site detail view with planting batches, measurements, photos, field member management (UI placeholder for add/remove flows).
+- Separated dashboards for clarity and reduced cross-role noise.
+- Theming + responsive navbar + sidebar combination.
+
+## 7. Roadmap (Planned / Next)
+Short Term:
+1. Supabase Auth & organization membership mapping.
+2. Real measurement creation (species, survival metrics, validation).
+3. Pagination / filtering for sites & verifications.
+4. Basic anchor job script + manual trigger page.
+
+Medium Term:
+5. Merkle tree generation + root anchoring transaction submission.
+6. Inclusion proof API + verifier-side proof UI.
+7. Offline / intermittent field capture queue + sync.
+8. Role-based RLS policies across all tables.
+
+Long Term:
+9. Public transparency portal (read-only, proof verification UX).
+10. Multi-org support w/ invitation flows & audit logs.
+11. Geospatial overlays (map view) for sites & planting batches.
+
+## 8. Getting Started (Local Dev)
+
+Prerequisites: Node.js 18+, PNPM/NPM/Yarn, a Supabase project (if you want live data), optional Algorand TestNet account.
+
+Install deps & run dev server:
+
+```bash
+npm install
+npm run dev
+```
+
+Visit http://localhost:3000
+
+Environment variables you will eventually add (placeholder):
+```
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=  # server jobs only (never expose client side)
+ALGOD_API_URL=https://testnet-api.algonode.cloud
+```
+
+## 9. Using the Wallet
+The connect button is in the top navbar. After connecting you can access the `address` via:
 ```tsx
 "use client";
 import { useWallet } from "../lib/wallet/PeraWalletProvider";
-
-export function Example() {
-	const { address, connect, disconnect, isConnected } = useWallet();
-	return (
-		<div>
-			{isConnected ? (
-				<button onClick={disconnect}>Disconnect {address?.slice(0,6)}…</button>
-			) : (
-				<button onClick={connect}>Connect Wallet</button>
-			)}
-		</div>
-	);
-}
+// ...inside component
+const { address, isConnected } = useWallet();
 ```
 
-### Chain Selection
-
-By default the SDK uses chain id `4160` (All). To pin to TestNet or MainNet adjust the constructor in `PeraWalletProvider`:
-
-```ts
-new PeraWalletConnect({ chainId: "416002" }); // TestNet
+## 10. Merkle Anchoring (Design Sketch)
+Pseudo process:
+```text
+SELECT rows -> normalize -> hash each leaf -> build Merkle tree -> root
+root || timestamp || version -> sign (optional) -> Algorand tx (note field)
+store (root, tx_id, round) in onchain_anchors
 ```
+Later: Provide an endpoint `/api/proof?leafId=...` returning branch for client-side verification.
 
-### Future: Signing Transactions
+## 11. Contributing
+PRs welcome once core auth + anchoring is stabilized. Until then focus is rapid iteration.
 
-`algosdk` is installed. Example skeleton:
+## 12. License
+TBD (add MIT / Apache-2.0 when finalized).
 
-```ts
-import algosdk from "algosdk";
-import { useWallet } from "../lib/wallet/PeraWalletProvider";
-
-async function signPayment(pera: any, from: string, to: string) {
-	const algod = new algosdk.Algodv2("", "https://testnet-api.algonode.cloud", "");
-	const params = await algod.getTransactionParams().do();
-	const txn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
-		from,
-		to,
-		amount: 1, // microAlgos
-		suggestedParams: params,
-	});
-	const signed = await pera.signTransaction([[{ txn }]]);
-	await algod.sendRawTransaction(signed[0]).do();
-}
-```
-
-### Reconnect Logic
-
-On mount the provider calls `reconnectSession()` and re-attaches the disconnect listener.
-
-### Styling
-
-The navbar button is a white pill (`WalletButton`) and reuses Tailwind utilities. Modify its look in `WalletButton.tsx`.
+## 13. Acknowledgements
+- Algorand ecosystem & Pera Wallet team.
+- Supabase for a great DX.
+- Vercel / Next.js for deployment & framework tooling.
 
 ---
+
+> This project uses Pera Wallet for Algorand account connectivity and will leverage Algorand for cryptographic data anchoring, not bulk storage. Transparency with efficiency.
 
 
 ## Dashboard Structure (Separated by Role)
