@@ -54,6 +54,32 @@ export interface SiteFieldMember {
   id: string; site_id: string; contact_id: string; role?: string | null; added_at?: string; contact?: Contact;
 }
 
+// New: Invitation + Organization Member augmentations
+export interface Invitation {
+  id: string;
+  organization_id: string;
+  email: string;
+  role: OrgRoleInvite; // restricted subset
+  site_ids?: string[] | null;
+  token_hash: string;
+  expires_at: string;
+  accepted_at?: string | null;
+  revoked_at?: string | null;
+  invited_by?: string | null;
+  created_at?: string;
+}
+
+export type OrgMemberRole = 'org_admin' | 'field_agent' | 'verifier' | 'viewer';
+export type OrgRoleInvite = 'field_agent' | 'verifier';
+
+export interface OrganizationMember {
+  id: string;
+  organization_id: string;
+  user_id: string;
+  role: OrgMemberRole;
+  created_at?: string;
+}
+
 // Lightweight input helper for creating measurement client-side
 export interface NewMeasurementInput {
   site_id: string; measured_at: string; planting_batch_id?: string | null; species_id?: string | null; tree_count?: number | null;
