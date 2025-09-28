@@ -6,10 +6,10 @@ import CTASection from "../components/CTASection";
 import Navbar, { NavLink } from "../components/Navbar";
 
 const NAV_LINKS: NavLink[] = [
-  { label: "Organisation Dashboard", href: "#organisation-dashboard" },
-  { label: "Field Dashboard", href: "#field-dashboard" },
-  { label: "Verifier", href: "#verifier" },
-  { label: "Connect Wallet", href: "#wallet" },
+  { label: "Organisation Dashboard", href: "/dashboard/org" },
+  { label: "Field Dashboard", href: "/dashboard/sites" },
+  { label: "Verifier", href: "/dashboard/verifier" },
+  { label: "Connect Wallet", href: "#wallet" }, // keeps wallet anchor behavior if used
 ];
 
 export default function Home() {
