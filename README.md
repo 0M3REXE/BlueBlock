@@ -9,7 +9,9 @@
 
 ## 1. What Is This Project?
 
-BlueBlock is a Next.js + Supabase application for managing reforestation / restoration project data:
+A decentralized Blue Carbon MRV platform built on Algorand, enabling transparent tracking of coastal ecosystem restoration. Verified field data from drones and mobile apps is immutably stored, with smart contracts tokenizing carbon credits. The system empowers NGOs, communities, and coastal panchayats to participate and benefit in India’s climate.
+
+### What it does ?
 
 - Track sites, planting batches, measurements, photos and verification events.
 - Provide separate focused dashboards for Organization staff, Field operators, and external Verifiers.
