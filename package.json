@@ -6,7 +6,10 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "deploy:contract": "cd contracts/blueblock-anchor && python3 deploy.py",
+    "test:contract": "cd contracts/blueblock-anchor && python3 test_contract.py",
+    "seed": "node scripts/seed-database.js"
   },
   "dependencies": {
     "@perawallet/connect": "^1.4.2",

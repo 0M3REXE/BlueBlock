@@ -39,17 +39,17 @@ const BENEFITS: Benefit[] = [
 
 export default function AlgorandBenefitsSection() {
   return (
-    <section id="algorand" className="mx-auto max-w-5xl py-24">
-      <div className="mb-12 flex flex-col gap-4">
-        <h2 className="font-heading text-2xl font-semibold tracking-tight text-white sm:text-3xl">Why Algorand?</h2>
+    <section id="algorand" className="mx-auto max-w-5xl py-16 sm:py-20 md:py-24">
+      <div className="mb-8 flex flex-col gap-3 sm:mb-12 sm:gap-4">
+        <h2 className="font-heading text-xl font-semibold tracking-tight text-white sm:text-2xl md:text-3xl">Why Algorand?</h2>
         <p className="max-w-2xl text-sm leading-relaxed text-white/65 sm:text-base">
           The platform&apos;s integrity depends on a blockchain that is energy-efficient, fast, and verifiable. Algorand offers a technically aligned foundation for cryptographically anchored environmental data and carbon issuance workflows.
         </p>
       </div>
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
         {BENEFITS.map(b => (
-          <div key={b.title} className="group relative flex flex-col gap-4 rounded-lg border border-white/10 bg-white/[0.035] p-5">
-            <div className="flex items-center gap-2 text-[0.6rem] font-medium tracking-[0.28em] text-cyan-300/80">
+          <div key={b.title} className="group relative flex flex-col gap-3 rounded-lg border border-white/10 bg-white/[0.035] p-4 sm:gap-4 sm:p-5">
+            <div className="flex items-center gap-2 text-[0.55rem] font-medium tracking-[0.25em] text-cyan-300/80 sm:text-[0.6rem] sm:tracking-[0.28em]">
               <span className="h-1.5 w-1.5 rounded-full bg-cyan-300" />
               {b.tag}
             </div>
