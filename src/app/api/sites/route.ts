@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseServer } from '../../../lib/supabase/server';
 
 export async function GET() {
@@ -16,3 +16,59 @@ export async function GET() {
     return NextResponse.json([], { status: 200 });
   }
 }
+
+export async function POST(request: NextRequest) {
+  try {
+    const supabase = getSupabaseServer();
+    const body = await request.json();
+
+    const { data, error } = await supabase
+      .from('sites')
+      .insert(body)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error('Error creating site:', error);
+    return NextResponse.json(
+      { error: 'Failed to create site' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(request: NextRequest) {
+  try {
+    const supabase = getSupabaseServer();
+    const body = await request.json();
+    const { id, ...updateData } = body;
+
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Site ID is required' },
+        { status: 400 }
+      );
+    }
+
+    const { data, error } = await supabase
+      .from('sites')
+      .update(updateData)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    return NextResponse.json(data);
+  } catch (error) {
+    console.error('Error updating site:', error);
+    return NextResponse.json(
+      { error: 'Failed to update site' },
+      { status: 500 }
+    );
+  }
+}
+
