@@ -81,45 +81,45 @@ export default function AnchorsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-6xl mx-auto px-4">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+    <div className="min-h-screen bg-gray-50 px-4 py-6 sm:px-6 sm:py-8">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="mb-2 text-2xl font-bold text-gray-900 sm:text-3xl">
             Blockchain Anchors
           </h1>
-          <p className="text-gray-600">
+          <p className="text-sm text-gray-600 sm:text-base">
             Immutable records of MRV data anchored to Algorand blockchain
           </p>
         </div>
 
         {/* Stats Card */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="mb-6 rounded-lg bg-white p-4 shadow-md sm:mb-8 sm:p-6">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <div>
-              <p className="text-sm text-gray-500">Total Anchors</p>
-              <p className="text-2xl font-bold text-gray-900">{anchorCount}</p>
+              <p className="text-xs text-gray-500 sm:text-sm">Total Anchors</p>
+              <p className="text-xl font-bold text-gray-900 sm:text-2xl">{anchorCount}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Network</p>
-              <p className="text-2xl font-bold text-blue-600">TestNet</p>
+              <p className="text-xs text-gray-500 sm:text-sm">Network</p>
+              <p className="text-xl font-bold text-blue-600 sm:text-2xl">TestNet</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Status</p>
-              <p className="text-2xl font-bold text-green-600">Active</p>
+              <p className="text-xs text-gray-500 sm:text-sm">Status</p>
+              <p className="text-xl font-bold text-green-600 sm:text-2xl">Active</p>
             </div>
           </div>
         </div>
 
         {/* Anchor Data Form */}
         {isConnected && (
-          <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-gray-900">
+          <div className="mb-6 rounded-lg bg-white p-4 shadow-md sm:mb-8 sm:p-6">
+            <div className="mb-4 flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
+              <h2 className="text-lg font-semibold text-gray-900 sm:text-xl">
                 Anchor New Data
               </h2>
               <button
                 onClick={() => setShowAnchorForm(!showAnchorForm)}
-                className="px-4 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                className="rounded-md bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700"
               >
                 {showAnchorForm ? 'Hide Form' : 'Show Form'}
               </button>
@@ -136,15 +136,15 @@ export default function AnchorsPage() {
         )}
 
         {/* Anchors List */}
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-xl font-semibold text-gray-900">
+        <div className="overflow-hidden rounded-lg bg-white shadow-md">
+          <div className="border-b border-gray-200 px-4 py-3 sm:px-6 sm:py-4">
+            <h2 className="text-lg font-semibold text-gray-900 sm:text-xl">
               Recent Anchors
             </h2>
           </div>
 
           {loading ? (
-            <div className="p-8 text-center text-gray-500">
+            <div className="p-6 text-center text-sm text-gray-500 sm:p-8 sm:text-base">
               Loading anchors...
             </div>
           ) : error ? (

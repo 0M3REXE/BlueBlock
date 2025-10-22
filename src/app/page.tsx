@@ -14,16 +14,16 @@ export default function Home() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_40%_35%,#07343f_0%,#021b23_55%,#01161d_100%)] opacity-[0.55]" />
       </div>
 
-      <section className="relative z-10 mx-auto w-full max-w-6xl px-4 pt-6 sm:px-8 md:px-12 lg:px-14">
+      <section className="relative z-10 mx-auto w-full max-w-6xl px-4 pt-4 sm:px-6 sm:pt-6 md:px-8 lg:px-12 xl:px-14">
         <Navbar links={NAV_LINKS} />
-        <div className="flex min-h-[calc(100dvh-5rem)] flex-col justify-center pb-10 pt-10 md:pt-14" id="hero">
+        <div className="flex min-h-[calc(100dvh-4rem)] flex-col justify-center pb-8 pt-8 sm:min-h-[calc(100dvh-5rem)] sm:pb-10 sm:pt-10 md:pt-14" id="hero">
           <Hero className="" />
         </div>
         <FeaturesSection />
-  <WorkflowSection />
-  <AlgorandBenefitsSection />
+        <WorkflowSection />
+        <AlgorandBenefitsSection />
         <CTASection />
-        <div className="pb-24" />
+        <div className="pb-16 sm:pb-20 md:pb-24" />
       </section>
     </main>
   );
