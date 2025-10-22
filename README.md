@@ -15,7 +15,7 @@ A decentralized Blue Carbon MRV platform built on Algorand, enabling transparent
 
 - Track sites, planting batches, measurements, photos and verification events.
 - Provide separate focused dashboards for Organization staff, Field operators, and external Verifiers.
-- (Planned) Periodically aggregate critical data into Merkle roots and anchor them on Algorand for tamper‑evident auditability.
+- **✅ NEW:** Anchor Merkle roots of MRV data to Algorand blockchain via smart contract for tamper-evident auditability.
 
 ## 2. Why Algorand?
 
@@ -40,9 +40,14 @@ Key integration pieces:
 - `src/components/WalletButton.tsx` – adaptive connect / address / disconnect UI.
 - Global provider wrapped in `app/layout.tsx`.
 
-Future additions:
-- Signing anchor transactions automatically when a new root is ready.
-- Viewing recent on-chain anchor transactions with deep links to explorers.
+**✅ NEW - Smart Contract Integration:**
+- Full TEAL smart contract deployed via AlgoKit for anchoring Merkle roots
+- Interactive UI at `/anchors` for anchoring and viewing data
+- API routes for transaction preparation and submission
+- Pera Wallet integration for transaction signing
+- View anchors on Algorand TestNet Explorer
+
+See [ALGORAND_INTEGRATION.md](./ALGORAND_INTEGRATION.md) for detailed documentation.
 
 ## 4. Current Architecture (MVP State)
 
@@ -51,15 +56,17 @@ Future additions:
 | Web UI | Next.js (App Router), React, TypeScript | Dashboards + landing site |
 | Styling | Tailwind CSS | Rapid, utility-first styling |
 | Data | Supabase Postgres | Authoritative project, site & measurement data |
-| On-Chain | Algorand (planned) | Anchor Merkle roots of critical data |
+| **Smart Contract** | **Algorand TEAL + AlgoKit** | **Anchor Merkle roots on-chain** |
+| On-Chain | Algorand (TestNet) | Immutable data anchoring |
 | Wallet | Pera Wallet | User key management & transaction signing |
 
 Logical flow:
 1. Field users submit measurements via Field dashboard (placeholder form now).
 2. Organization users view KPIs, site detail, manage field member associations.
 3. Verifiers review verification records (table present; logic to expand).
-4. A background (future) job computes Merkle root -> signed & sent to Algorand.
-5. Anchor tx hash stored in `onchain_anchors` for audit UI.
+4. **✅ NEW:** Authorized users can anchor batches of data to Algorand via `/anchors` page.
+5. Merkle roots are computed and stored on-chain via smart contract.
+6. Transaction hash and metadata stored in `onchain_anchors` for audit UI.
 
 ## 5. Dashboards Overview
 
@@ -68,11 +75,15 @@ Logical flow:
 | `/organization-dashboard` | Internal org staff | KPIs, Sites list, Site detail (members, batches, measurements, photos) |
 | `/field-dashboard` | Field teams | Measurement submission (expanding soon) |
 | `/verifier-dashboard` | External verifiers | Verification records table |
+| **`/anchors`** | **Authorized users** | **Anchor data to blockchain + view anchors** |
 
 Sidebars + top unified navbar keep navigation consistent while keeping role scoping conceptual (auth/RLS to follow).
 
 ## 6. Feature Highlights (Implemented)
 - Wallet connect / disconnect with Pera Wallet (session reconnect).
+- **✅ NEW:** Full Algorand smart contract implementation with AlgoKit.
+- **✅ NEW:** Data anchoring UI with Merkle root generation.
+- **✅ NEW:** View on-chain anchors with transaction links to explorer.
 - Structured site detail view with planting batches, measurements, photos, field member management (UI placeholder for add/remove flows).
 - Separated dashboards for clarity and reduced cross-role noise.
 - Theming + responsive navbar + sidebar combination.
@@ -82,13 +93,14 @@ Short Term:
 1. Supabase Auth & organization membership mapping.
 2. Real measurement creation (species, survival metrics, validation).
 3. Pagination / filtering for sites & verifications.
-4. Basic anchor job script + manual trigger page.
+4. ~~Basic anchor job script + manual trigger page~~ **✅ DONE - Smart contract + UI implemented**
 
 Medium Term:
-5. Merkle tree generation + root anchoring transaction submission.
+5. ~~Merkle tree generation + root anchoring transaction submission~~ **✅ DONE**
 6. Inclusion proof API + verifier-side proof UI.
 7. Offline / intermittent field capture queue + sync.
 8. Role-based RLS policies across all tables.
+9. Automated background job for periodic anchoring.
 
 Long Term:
 9. Public transparency portal (read-only, proof verification UX).
@@ -114,7 +126,23 @@ NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=  # server jobs only (never expose client side)
 ALGOD_API_URL=https://testnet-api.algonode.cloud
+NEXT_PUBLIC_ANCHOR_APP_ID=   # Set after deploying smart contract
 ```
+
+## Deploying the Smart Contract
+
+```bash
+# Install Python dependencies
+pip3 install algokit --user
+
+# Deploy the contract
+cd contracts/blueblock-anchor
+python3 deploy.py
+
+# This will create deployment.json and update .env.local
+```
+
+See [ALGORAND_INTEGRATION.md](./ALGORAND_INTEGRATION.md) for detailed instructions.
 
 ## 9. Using the Wallet
 The connect button is in the top navbar. After connecting you can access the `address` via:
@@ -125,14 +153,33 @@ import { useWallet } from "../lib/wallet/PeraWalletProvider";
 const { address, isConnected } = useWallet();
 ```
 
-## 10. Merkle Anchoring (Design Sketch)
-Pseudo process:
-```text
-SELECT rows -> normalize -> hash each leaf -> build Merkle tree -> root
-root || timestamp || version -> sign (optional) -> Algorand tx (note field)
-store (root, tx_id, round) in onchain_anchors
+## 10. Merkle Anchoring (Implemented)
+
+The smart contract enables:
+```typescript
+// Create Merkle root from data
+import { createMerkleRoot, prepareAnchorTransaction } from '@/lib/algorand/contract';
+
+const data = [
+  { site: 'A', height: 45.2, survival: 0.92 },
+  { site: 'B', height: 38.7, survival: 0.88 }
+];
+
+const merkleRoot = createMerkleRoot(data);
+
+// Prepare and sign transaction with Pera Wallet
+const txn = await prepareAnchorTransaction(
+  address, projectId, merkleRoot, data.length, fromTs, toTs
+);
+const signed = await pera.signTransaction([txn]);
+
+// Submit to Algorand
+await submitTransaction(signed[0]);
 ```
-Later: Provide an endpoint `/api/proof?leafId=...` returning branch for client-side verification.
+
+View anchors at `/anchors` or via the API at `/api/anchor/state`.
+
+For detailed documentation, see [ALGORAND_INTEGRATION.md](./ALGORAND_INTEGRATION.md).
 
 ## 11. Contributing
 PRs welcome once core auth + anchoring is stabilized. Until then focus is rapid iteration.
