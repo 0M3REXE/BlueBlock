@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# algorand contract deployment artifacts
+contracts/blueblock-anchor/deployment.json
+contracts/blueblock-anchor/__pycache__/
+*.pyc
